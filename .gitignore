@@ -1,0 +1,6 @@
+.migration/
+dist/
+__pycache__/
+*.pyc
+*.sqlite*
+.local/
