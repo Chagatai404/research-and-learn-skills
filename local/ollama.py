@@ -10,6 +10,11 @@ import shutil
 import subprocess
 import tempfile
 
+if __package__:
+    from .ollama_codex import codex_proxy
+else:
+    from ollama_codex import codex_proxy
+
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_SOURCE = Path.home() / ".ollama" / "models"
@@ -87,10 +92,19 @@ def main():
     parser.add_argument("--source", type=Path, default=DEFAULT_SOURCE)
     parser.add_argument("--store", type=Path, default=DEFAULT_STORE)
     parser.add_argument("--port", type=int, default=11435)
+    parser.add_argument("--workspace", type=Path, help="Serve a Codex endpoint for this workspace")
+    parser.add_argument("--codex-port", type=int, default=11436, help="Loopback port used with --workspace")
     parser.add_argument("--prepare-only", action="store_true")
     args = parser.parse_args()
     if not 1 <= args.port <= 65535:
         parser.error("--port must be between 1 and 65535")
+    workspace = None
+    if args.workspace is not None:
+        workspace = args.workspace.resolve()
+        if not workspace.is_dir():
+            parser.error("--workspace must be an existing directory")
+        if not 1 <= args.codex_port <= 65535 or args.codex_port == args.port:
+            parser.error("--codex-port must be between 1 and 65535 and differ from --port")
     store = args.store.resolve()
     try:
         stage_model(args.source.resolve(), store, args.model)
@@ -109,9 +123,18 @@ def main():
         "OLLAMA_LLM_LIBRARY": "cpu", "CUDA_VISIBLE_DEVICES": "-1", "ROCR_VISIBLE_DEVICES": "-1",
         "HIP_VISIBLE_DEVICES": "-1",
     }
-    print(f"Serving on http://{address}. Use http://{address}/v1 as the Codex OSS base URL.", flush=True)
+    command = [ollama, "serve"]
+    environment = {**os.environ, **settings}
     try:
-        return subprocess.run([ollama, "serve"], env={**os.environ, **settings}, check=False).returncode
+        if workspace is None:
+            print(f"Serving on http://{address}. Use http://{address}/v1 as the Codex OSS base URL.", flush=True)
+            return subprocess.run(command, env=environment, check=False).returncode
+        with codex_proxy(args.codex_port, args.port, workspace):
+            print(f"Serving Ollama on http://{address}", flush=True)
+            print(f"Use http://127.0.0.1:{args.codex_port}/v1 as the Codex OSS base URL for {workspace}", flush=True)
+            return subprocess.run(command, env=environment, check=False).returncode
+    except OSError as exc:
+        parser.exit(1, f"Could not serve Ollama: {exc}\n")
     except KeyboardInterrupt:
         return 130
 
