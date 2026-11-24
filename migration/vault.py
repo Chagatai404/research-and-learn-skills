@@ -9,7 +9,7 @@ from collection import ARCHIVE, generate, group, HUB, page_path, PILOT, wik
 from storage import checked, current, digest, restore_drill, transfer
 
 WIKI = re.compile(r'!?\[\[([^\]\n]+?)\]\]')
-VAULT = Path('C:/Users/ASUS/Obsidian/Knowledge')
+VAULT = Path.home() / 'Obsidian' / 'Knowledge'
 WORK = Path(__file__).resolve().parents[1] / '.migration'
 PROJECTION = 'Research OS/Knowledge/Knowledge.md'
 APP_NOTE = '01 Projects/Scientific Research OS/Scientific Research OS.md'

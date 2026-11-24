@@ -1,0 +1,5 @@
+{
+  "name": "research-and-learn",
+  "owner": {"name": "Chagatai404"},
+  "plugins": [{"name": "research-and-learn", "source": "./", "description": "Adaptive tutoring, research and teach-back."}]
+}

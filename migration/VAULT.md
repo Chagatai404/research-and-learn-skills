@@ -1,5 +1,7 @@
 # Vault migration and restore
 
+These counts and hashes describe the migration snapshot. Later study, archiving and research updates can legitimately change the live files. On another computer, pass `--vault PATH_TO_VAULT` and `--work PATH_TO_PRIVATE_BATCHES` to point at your own folders. The original sealed manifests are bound to their original vault path. Restore there before moving the vault, or use the backed-up originals for a reviewed recovery on the new system.
+
 Open `Home.md` → `Study and Research` in `C:/Users/ASUS/Obsidian/Knowledge`. The pilot covers CENG487. The remaining batch adds the other course, research and library indexes. Cleanup marks the former app as retired, qualifies four Home links to their curated notes, removes the former portal footer and metadata from the seven question notes embedded in active investigations, and indexes seven review snapshots dated 2026-11-24.
 
 ## Reconciliation
