@@ -30,6 +30,8 @@ Start a new host session to discover installed skills. To inspect a build in Cla
 
 ## Local state and note editing
 
+For the installed Qwen model on this machine, see the [local Ollama setup](docs/local-ollama.md). It uses the existing model files and the same Codex plugin.
+
 Run `python scripts/profile.py --help` for the supported profile operations. Use a disposable profile for demonstrations. A missing grade is unknown. A claim decision, reading history, or a research agent's successful experiment cannot establish a learner's mastery.
 
 For a note edit, save the proposed full text to a local draft, then run `python scripts/note_edit.py preview VAULT RELATIVE_NOTE DRAFT`. Inspect the diff, preserve unrelated edits, and apply the same draft with `apply`, `--expect` and `--draft-hash`. The helper backs up prior bytes outside the vault, checks the current digest and reads back the result. Use another preview to restore a backed-up version. The per-note lock coordinates plugin writers. Close competing active editors during bulk migrations.
